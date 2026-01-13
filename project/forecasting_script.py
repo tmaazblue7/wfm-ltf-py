@@ -20,12 +20,17 @@ import streamlit as st
 # -----------------------------
 # 2. Define File Paths
 # -----------------------------
-input_folder = r"C:\Users\Talexa03\OneDrive - Blue Cross Blue Shield of Arizona, Inc\Alteryx\data\Seasonal_Historicals"
-output_file = r"C:\Users\Talexa03\OneDrive - Blue Cross Blue Shield of Arizona, Inc\Alteryx\Reports\2026LTF.csv"
+input_folder = "project/data"  # Source files stored in project/data
+output_file = "project/output/forecast_results_2026.csv"  # Suggested output file
+folder_path = os.path.dirname(output_file)
+
+# Ensure output directory exists
+os.makedirs(os.path.dirname(output_file), exist_ok=True)
 
 # -----------------------------
 # 3. Load and Combine CSV Files
 # -----------------------------
+
 def load_and_combine_csv(folder_path):
     """Reads all CSV files from the folder and combines them into a single DataFrame."""
     try:
@@ -59,7 +64,10 @@ data.fillna(method='ffill', inplace=True)
 # -----------------------------
 # 5. Calculate Contact Rate
 # -----------------------------
-data['Contact_Rate'] = data['Call_Volume'] / data['Membership_Count']
+def Contact_Rate(data):
+    """Calculate Contact Rate as Calls Received / Membership Count."""
+    data['Contact_Rate'] = data['Calls_Received'] / data['Membership_Count']
+    return data
 
 # -----------------------------
 # 6. Forecast Membership for 2027
@@ -93,6 +101,12 @@ forecasted_membership = forecast_membership(data, method="prophet")
 # -----------------------------
 # 7. Forecast Call Volume for 2026
 # -----------------------------
+# # Calculate the mean Contact Rate
+def calculate_contact_rate(data):
+    data['Contact_Rate'] = data['Historical_Call_Volume'] / data['Membership_Count']
+    return data
+
+data = calculate_contact_rate(data)
 avg_contact_rate = data['Contact_Rate'].mean()
 forecasted_membership['Forecasted_Call_Volume'] = forecasted_membership['yhat'] * avg_contact_rate
 
@@ -139,7 +153,7 @@ def run_ui():
     st.line_chart(forecasted_membership[['ds', 'Forecasted_Call_Volume']].set_index('ds'))
 
     # Download button
-    st.download_button("Download Forecast CSV", data=forecasted_membership.to_csv(index=False), file_name="2026LTF.csv")
+    st.download_button("Download Forecast CSV", data=forecasted_membership.to_csv(index=False), file_name="forecast_results_2026.csv")
 
 if __name__ == "__main__":
     # Uncomment below to run Streamlit UI

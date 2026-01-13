@@ -1,0 +1,8 @@
+pandas==2.2.0
+numpy==1.26.3
+prophet==1.1.5
+statsmodels==0.14.1
+scikit-learn==1.4.0
+streamlit==1.29.0
+matplotlib==3.8.2
+seaborn==0.13.2
