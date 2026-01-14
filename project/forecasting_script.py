@@ -11,8 +11,8 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error
 
 # Paths
-input_file = "project/data/"
-output_file = "project/output/forecast_results_2026.csv"
+input_file = 'workspaces/wfm-ltf-py/project/data/combined.csv'
+output_file = 'workspaces/wfm-ltf-py/project/output/forecast_results_2026.csv'
 
 # Load data
 data = pd.read_csv(input_file)
